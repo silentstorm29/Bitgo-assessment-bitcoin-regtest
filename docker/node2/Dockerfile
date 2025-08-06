@@ -1,2 +1,3 @@
-FROM ruimarinho/bitcoin-core:25.0
+FROM ruimarinho/bitcoin-core:alpine
+#docker pull ruimarinho/bitcoin-core:alpine
 COPY bitcoin.conf /home/bitcoin/.bitcoin/bitcoin.conf

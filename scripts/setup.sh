@@ -16,13 +16,17 @@ until docker exec bitgo-node2 bitcoin-cli $RPC2 getblockchaininfo &>/dev/null; d
   sleep 1
 done
 
+# Create wallets on both nodes
+docker exec bitgo-node1 bitcoin-cli $RPC1 createwallet "wallet"
+docker exec bitgo-node2 bitcoin-cli $RPC2 createwallet "wallet"
+
 # 1. Connect node2 to node1
 echo "[1/5] Connecting node2 to node1"
 docker exec bitgo-node2 bitcoin-cli $RPC2 addnode "bitgo-node1" onetry
 
 # 2. Mine initial blocks to unlock coinbase outputs
 echo "[2/5] Mining 101 blocks on node1"
-docker exec bitgo-node1 bitcoin-cli $RPC1 generate 101
+docker exec bitgo-node1 bitcoin-cli $RPC1 -generate 101
 sleep 2
 
 # 3. Generate a new address on node2
@@ -37,7 +41,7 @@ echo "Transaction ID: $TXID"
 
 # 5. Mine one block to confirm the transaction
 echo "[5/5] Mining 1 block to confirm"
-docker exec bitgo-node1 bitcoin-cli $RPC1 generate 1
+docker exec bitgo-node1 bitcoin-cli $RPC1 -generate 1
 
 # Final: show balances
 echo "All done! Balances:"
