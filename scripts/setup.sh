@@ -16,9 +16,14 @@ until docker exec bitgo-node2 bitcoin-cli $RPC2 getblockchaininfo &>/dev/null; d
   sleep 1
 done
 
-# Create wallets on both nodes
-docker exec bitgo-node1 bitcoin-cli $RPC1 createwallet "wallet"
-docker exec bitgo-node2 bitcoin-cli $RPC2 createwallet "wallet"
+# Create wallets on both nodes if not existing
+if ! docker exec bitgo-node1 bitcoin-cli $RPC1 listwallets | grep -q '"wallet"'; then
+  docker exec bitgo-node1 bitcoin-cli $RPC1 createwallet wallet
+fi
+
+if ! docker exec bitgo-node2 bitcoin-cli $RPC2 listwallets | grep -q '"wallet"'; then
+  docker exec bitgo-node2 bitcoin-cli $RPC2 createwallet wallet
+fi
 
 # 1. Connect node2 to node1
 echo "[1/5] Connecting node2 to node1"
