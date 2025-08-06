@@ -1,0 +1,28 @@
+version: '3.8'
+services:
+  node1:
+    build: ./docker/node1
+    container_name: bitgo-node1
+    ports:
+      - "18444:18444"  # P2P
+      - "18443:18443"  # RPC
+    volumes:
+      - node1-data:/home/bitcoin/.bitcoin
+    networks:
+      - bitgo-net
+  node2:
+    build: ./docker/node2
+    container_name: bitgo-node2
+    ports:
+      - "28444:18444"  # Map to different host port if needed
+      - "28443:18443"
+    volumes:
+      - node2-data:/home/bitcoin/.bitcoin
+    networks:
+      - bitgo-net
+volumes:
+  node1-data:
+  node2-data:
+networks:
+  bitgo-net:
+    driver: bridge
