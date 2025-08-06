@@ -23,3 +23,13 @@ jobs:
         run: docker build -t bitgo-node1 docker/node1
       - name: Build node2 Docker image
         run: docker build -t bitgo-node2 docker/node2
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Build and start containers
+        run: docker-compose up --build -d
+      - name: Wait for nodes and run setup script
+        run: bash scripts/setup.sh
+      - name: Show logs
+        run: docker-compose logs
