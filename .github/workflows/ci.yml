@@ -4,40 +4,40 @@ jobs:
   lint:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: ShellCheck for scripts
+      - uses: actions/checkout@v3  # Checkout repository code
+      - name: ShellCheck for scripts  # Lint shell scripts for errors and best practices
         uses: reviewdog/action-shellcheck@v1
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           reporter: github-pr-check
           path: scripts/setup.sh
-      - name: Dockerfile Lint
+      - name: Dockerfile Lint  # Lint Dockerfile for node1
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: docker/node1/Dockerfile
-      - name: Dockerfile Lint (node2)
+      - name: Dockerfile Lint (node2)  # Lint Dockerfile for node2
         uses: hadolint/hadolint-action@v3.1.0
         with:
           dockerfile: docker/node2/Dockerfile
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Build node1 Docker image
+      - uses: actions/checkout@v3  # Checkout repository code
+      - name: Build node1 Docker image  # Build Docker image for node1
         run: docker build -t bitgo-node1 docker/node1
-      - name: Build node2 Docker image
+      - name: Build node2 Docker image  # Build Docker image for node2
         run: docker build -t bitgo-node2 docker/node2
   test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-      - name: Install Docker Compose
+      - uses: actions/checkout@v3  # Checkout repository code
+      - name: Install Docker Compose  # Install docker-compose tool
         run: |
           sudo apt-get update
           sudo apt-get install -y docker-compose
-      - name: Build and start containers
+      - name: Build and start containers  # Build images and start containers in detached mode
         run: docker-compose up --build -d
-      - name: Wait for nodes and run setup script
+      - name: Wait for nodes and run setup script  # Run setup script to initialize regtest network and transactions
         run: bash scripts/setup.sh
-      - name: Show logs
+      - name: Show logs  # Output logs from all containers
         run: docker-compose logs
