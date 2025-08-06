@@ -10,6 +10,7 @@ services:
       - node1-data:/home/bitcoin/.bitcoin
     networks:
       - bitgo-net
+    restart: unless-stopped
   node2:
     build: ./docker/node2
     container_name: bitgo-node2
@@ -20,6 +21,7 @@ services:
       - node2-data:/home/bitcoin/.bitcoin
     networks:
       - bitgo-net
+    restart: unless-stopped
 volumes:
   node1-data:
   node2-data:
