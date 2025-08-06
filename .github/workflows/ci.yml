@@ -6,15 +6,19 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: ShellCheck for scripts
-        uses: ludeeus/action-shellcheck@v1
+        uses: reviewdog/action-shellcheck@v1
         with:
-          files: scripts/setup.sh
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-check
+          path: scripts/setup.sh
       - name: Dockerfile Lint
-        uses: redcoolbeans/dockerlint-action@v1
+        uses: hadolint/hadolint-action@v3.1.0
         with:
-          directories: |
-            docker/node1
-            docker/node2
+          dockerfile: docker/node1/Dockerfile
+      - name: Dockerfile Lint (node2)
+        uses: hadolint/hadolint-action@v3.1.0
+        with:
+          dockerfile: docker/node2/Dockerfile
   build:
     runs-on: ubuntu-latest
     steps:
